@@ -11,8 +11,15 @@ type PageProps = {
 };
 
 const Home = async ({ searchParams }: PageProps) => {
-  const { search, perPage } = await loadSearchParams(searchParams);
-  const products = await getProducts({ search, perPage });
+  const { search, perPage, offset } = await loadSearchParams(searchParams);
+
+  const transformedOffset = (offset - 1) * perPage;
+
+  const products = await getProducts({
+    search,
+    perPage,
+    offset: transformedOffset,
+  });
 
   async function refetchProducts() {
     "use server";
@@ -21,8 +28,10 @@ const Home = async ({ searchParams }: PageProps) => {
   }
 
   return (
-    <main className="flex flex-col gap-10 px-10 justify-center max-w-7xl mx-auto py-10">
-      <h1 className="text-[4vw] w-full text-center font-bold">Awesome Products</h1>
+    <main className="flex flex-col gap-10 px-8 justify-center max-w-7xl mx-auto py-10">
+      <h1 className="text-[4vw] w-full text-center font-bold">
+        Awesome Products
+      </h1>
 
       <ProductsFilter refetchProducts={refetchProducts} />
 
@@ -32,7 +41,7 @@ const Home = async ({ searchParams }: PageProps) => {
         ))}
       </div>
 
-      <ProductPagintaion refetchProducts={refetchProducts}/>
+      <ProductPagintaion refetchProducts={refetchProducts} />
     </main>
   );
 };

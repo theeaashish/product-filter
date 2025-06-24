@@ -9,39 +9,65 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Button } from "./ui/button";
+import { ChevronLeft } from "lucide-react";
 
 interface ProductsPaginationPage {
-  refecthProducts: () => Promise<void>;
+    refetchProducts: () => Promise<void>;
 }
 
-const ProductPagintaion = ({ refecthProducts }: ProductsPaginationPage) => {
+const ProductPagintaion = ({ refetchProducts }: ProductsPaginationPage) => {
   const [offset, setOffset] = useQueryState(
     "offset",
-    parseAsInteger.withDefault(10)
+    parseAsInteger.withDefault(1)
   );
 
   const handleOffsetChange = (value: number) => {
     setOffset(value);
 
     setTimeout(() => {
-      refecthProducts();
+      refetchProducts();
     }, 300);
   };
 
   return (
     <Pagination>
       <PaginationContent>
+        {offset > 1 && (
+          <>
+            <PaginationItem>
+              <Button
+                variant="outline"
+                onClick={() => handleOffsetChange(offset - 1)}
+              >
+                <ChevronLeft />
+                Previous
+              </Button>
+            </PaginationItem>
+            <PaginationItem>
+              <Button
+                variant="outline"
+                onClick={() => handleOffsetChange(offset - 1)}
+              >
+                {offset - 1}
+              </Button>
+            </PaginationItem>
+          </>
+        )}
+
         <PaginationItem>
-          <PaginationPrevious href="#" />
+          <Button variant="outline" disabled>
+            {offset}
+          </Button>
         </PaginationItem>
+
         <PaginationItem>
-          <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
+          <Button
+            variant="outline"
+            onClick={() => handleOffsetChange(offset + 1)}
+          >
+            {offset + 1}
+          </Button>
         </PaginationItem>
       </PaginationContent>
     </Pagination>
